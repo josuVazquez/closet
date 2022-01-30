@@ -1,13 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const outfitSchema = new Schema({
+const itemSchema = new Schema({
     img:
     {
         type: Array
-    },
-    temporada: {
-        type: String,
     },
     name: {
         type: String,
@@ -20,4 +17,4 @@ const outfitSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('outfit', outfitSchema);
+module.exports = mongoose.model('item', itemSchema);
