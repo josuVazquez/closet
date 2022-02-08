@@ -28,7 +28,7 @@ router.post('/new', [], async (req, res) => {
 
 router.put('/update/:idOutfit', async (req, res) => {
     try {
-        const updatedOutfit = await Outfit.findByIdAndUpdate(req.params.idOutfit, req.body, { new: true });
+        const updatedOutfit = await Outfit.findByIdAndUpdate(req.params.idOutfit, { ...req.body });
         res.json(updatedOutfit);
     } catch (error) {
         res.json({ error: error.message });
