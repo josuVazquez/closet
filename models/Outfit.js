@@ -6,7 +6,7 @@ const outfitSchema = new Schema({
     {
         type: Array
     },
-    temporada: {
+    season: {
         type: String,
     },
     name: {
@@ -17,6 +17,9 @@ const outfitSchema = new Schema({
     },
     complements: {
         type: Array
+    },
+    uid: {
+        type: String
     }
 });
 

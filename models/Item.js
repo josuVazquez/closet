@@ -14,6 +14,9 @@ const itemSchema = new Schema({
     },
     complements: {
         type: Array
+    },
+    uid: {
+        type: String
     }
 });
 

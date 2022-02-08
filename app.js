@@ -1,4 +1,4 @@
-require('dotenv').config({path: __dirname + '/.env'});
+require('dotenv').config({path: __dirname + '/env/.env'});
 
 var createError = require('http-errors');
 var express = require('express');
@@ -45,3 +45,9 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+// admin.initializeApp(
+//   credential: admin.credential.applicationDefault(),
+// );
+
+// export default admin
