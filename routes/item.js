@@ -1,10 +1,9 @@
 const router = require('express').Router();
 const Item = require('../models/Item');
 const { check, validationResult } = require('express-validator');
-// const { checkAdmin } = require('../middlewares');
 
 router.get('/', (req, res) => {
-    Item.find()
+    Item.find(req.filterUid)
         .then(item => {
             res.json(item);
         })
@@ -13,7 +12,7 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/new', [], async (req, res) => {
+router.post('/new', async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ error: errors.array() });
@@ -28,7 +27,7 @@ router.post('/new', [], async (req, res) => {
 
 router.put('/update/:idItem', async (req, res) => {
     try {
-        const updatedItem = await Item.findByIdAndUpdate(req.params.idItem, req.body, { new: true });
+        const updatedItem = await Item.findOneAndUpdate({ '_id': req.params.idOutfit, ...req.filterUid }, req.body);
         res.json(updatedItem);
     } catch (error) {
         res.json({ error: error.message });
@@ -36,7 +35,7 @@ router.put('/update/:idItem', async (req, res) => {
 });
 
 router.delete('/delete/:idItem', (req, res) => {
-    Item.findByIdAndRemove(req.params.idItem)
+    Item.findOneAndRemove({ '_id': req.params.idOutfit, ...req.filterUid })
         .then(deletedItem => {
             res.json(deletedItem);
         }).catch(error => {
@@ -46,11 +45,13 @@ router.delete('/delete/:idItem', (req, res) => {
 
 // /* GET single post. */
 router.get('/:idItem', function(req, res, next) {
-    Item.findById(req.params.idItem)
+    Item.findOne({ '_id': req.params.idItem, ...req.filterUid })
         .then(item => {
+            console.error(item);
             res.json(item);
         })
         .catch(error => {
+            console.error(error);
             res.json({ error: error.message });
         });
 });

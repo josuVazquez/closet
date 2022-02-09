@@ -1,10 +1,9 @@
 const router = require('express').Router();
 const Outfit = require('../models/Outfit');
 const { check, validationResult } = require('express-validator');
-// const { checkAdmin } = require('../middlewares');
 
 router.get('/', (req, res) => {
-    Outfit.find()
+    Outfit.find(req.filterUid)
         .then(outfit => {
             res.json(outfit);
         })
@@ -13,7 +12,7 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/new', [], async (req, res) => {
+router.post('/new', async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ error: errors.array() });
@@ -28,7 +27,7 @@ router.post('/new', [], async (req, res) => {
 
 router.put('/update/:idOutfit', async (req, res) => {
     try {
-        const updatedOutfit = await Outfit.findByIdAndUpdate(req.params.idOutfit, { ...req.body });
+        const updatedOutfit = await Outfit.findOneAndUpdate({ '_id': req.params.idOutfit, ...req.filterUid }, req.body);
         res.json(updatedOutfit);
     } catch (error) {
         res.json({ error: error.message });
@@ -36,7 +35,7 @@ router.put('/update/:idOutfit', async (req, res) => {
 });
 
 router.delete('/delete/:idOutfit', (req, res) => {
-    Outfit.findByIdAndRemove(req.params.idOutfit)
+    Outfit.findOneAndDelete({ '_id': req.params.idOutfit, ...req.filterUid })
         .then(deletedOutfit => {
             res.json(deletedOutfit);
         }).catch(error => {
@@ -46,7 +45,7 @@ router.delete('/delete/:idOutfit', (req, res) => {
 
 // /* GET single post. */
 router.get('/:idOutfit', function(req, res, next) {
-    Outfit.findById(req.params.idOutfit)
+    Outfit.findOne({ '_id': req.params.idOutfit, ...req.filterUid })
         .then(outfit => {
             res.json(outfit);
         })
@@ -55,32 +54,5 @@ router.get('/:idOutfit', function(req, res, next) {
         });
 });
 
-// router.post(
-//     "/upload",
-//     upload.single("file" /* name attribute of <file> element in your form */),
-//     (req, res) => {
-//       const tempPath = req.file.path;
-//       const targetPath = path.join(__dirname, "./uploads/image.png");
-  
-//       if (path.extname(req.file.originalname).toLowerCase() === ".png") {
-//         fs.rename(tempPath, targetPath, err => {
-//           if (err) return handleError(err, res);
-  
-//           res
-//             .status(200)
-//             .contentType("text/plain")
-//             .end("File uploaded!");
-//         });
-//       } else {
-//         fs.unlink(tempPath, err => {
-//           if (err) return handleError(err, res);
-  
-//           res
-//             .status(403)
-//             .contentType("text/plain")
-//             .end("Only .png files are allowed!");
-//         });
-//     }
-// });
 
 module.exports = router;

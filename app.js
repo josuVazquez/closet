@@ -1,4 +1,5 @@
 require('dotenv').config({path: __dirname + '/env/.env'});
+const middleware = require('./middlewares/auth-middleware');
 
 var createError = require('http-errors');
 var express = require('express');
@@ -25,6 +26,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(middleware.decodeToken);
+
 app.use('/outfit', outfitRouter);
 app.use('/item', itemRouter);
 
@@ -45,9 +48,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-
-// admin.initializeApp(
-//   credential: admin.credential.applicationDefault(),
-// );
-
-// export default admin
